@@ -10,3 +10,14 @@ export const ConsultasServidor = async () => {
     const dataExperi= Experimentos.map(res=> res[0]);
     return dataExperi;
 };
+export const ExperimentosInformacion = async (Entidad) => {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entidad:Entidad })
+    };
+    var getExperiemntos = URL + 'datosExperimento'
+    const respuesta = await fetch(getExperiemntos,requestOptions)
+    const resultado = await respuesta.json()
+    return resultado;
+};

@@ -1,35 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Button } from 'react-native';
-import ListaExperimentos from '../componentes/compListExperi/ListaExperimentos';
+import ListaGastoEnergetico from '../componentes/CalcuGasEnegetico/ListaGastoEnergetico';
 import { ConsultasServidor } from '../App/Consultas/ConsultasServidor';
 import Carga from '../componentes/PantallaCarga/Carga'
-const Home = ({ navigation}) => {    
+const Save = ({ navigation }) => {
     const [Experimentos, setExperimentos] = useState([])
     const [Visible, setVisible] = useState(true)
     useEffect(() => {
-        const fetchExperimento= async ()=>{
-            var dataserver=[]
+        const fetchExperimento = async () => {
+            var dataserver = []
             try {
-                const experimentosData=await ConsultasServidor();
+                const experimentosData = await ConsultasServidor();
                 console.log(experimentosData)
-                dataserver=experimentosData
+                dataserver = experimentosData
             } catch (error) {
                 console.log("sin datos recuperados")
             }
             setExperimentos(dataserver)
             setVisible(false)
-            
         }
         fetchExperimento()
+        console.log(navigation)
     }, []);
-
     return (
         <View style={styles.contenedor}>
-            <ListaExperimentos 
-            experi={Experimentos}
+            <ListaGastoEnergetico
+                experi={Experimentos}
             />
-            {Visible&&(<Carga/>)}         
-            
+            {Visible && (<Carga />)}
         </View>
     );
 }
@@ -42,4 +40,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Home;
+export default Save;
