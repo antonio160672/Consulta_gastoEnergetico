@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Button, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { Text, View, Button, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
 import globalStyles from '../../App/Styles/GlobalStyles';
 import Modal from '../Modal/Modal';
 import { ExperimentosInformacion } from '../../App/Consultas/ConsultasServidor';
 import Carga from '../PantallaCarga/Carga'
+import { FormatearFecha } from '../../App/helpers';
 
 const diccionario = {
     carrera: require('../../App/Imagines/actividad_correr.png'),
@@ -13,19 +14,23 @@ const diccionario = {
 const experimento = ({ Experimento }) => {
     const [Visible, setVisible] = useState(false)
     const [Cargavisible, setCargavisible] = useState(true)
-    const [DispMac, setDataExperiemnto] = useState([])
-    const [FechasData, setFechasData] = useState([])
+    const [DispMac, setDataExperiemnto] = useState()
+    const [FechasData, setFechasData] = useState()
 
     const Consultaservidor = () => {
         setVisible(true)
         const fetchExperimento = async () => {
-            var dataserver = {}
             try {
                 const experimentosData = await ExperimentosInformacion(Experimento);
-                dataserver = experimentosData
-                console.log(typeof(dataserver.dispositivos))
-                dataserver.dispositivos.forEach(data =>setDataExperiemnto(DispMac => [...DispMac, data]) );
-                dataserver.fechas.forEach(Date => setFechasData(FechasData => [...FechasData, Date]));   
+                const disp = JSON.parse(experimentosData.dispositivos)
+                const fecha = JSON.parse(experimentosData.fechas)
+
+                Object.keys(disp).map(function (key) {
+                    setDataExperiemnto(DispMac => ({ ...DispMac, [key]: disp[key] }))
+                })
+                Object.keys(fecha).map(function (key) {
+                    setFechasData(FechasData => ({ ...FechasData, [key]: fecha[key] }))
+                })
             } catch (error) {
                 console.log("sin datos recuperados")
             }
@@ -61,13 +66,69 @@ const experimento = ({ Experimento }) => {
             </View>
 
             <Modal isVisible={Visible} setVisible={setVisible}>
-
                 {!Cargavisible && (
                     <View>
-                        <Text>I am the modal content!</Text>
-                        <Text>{"\n",DispMac}</Text>
-                        <Text>{"\n",FechasData}</Text>
-                        <Button title="Click To Close Modal" />
+                        <View>
+                            <Text >Nombre del experimento:  </Text>
+                            <Text >         {Experimento} </Text>
+                        </View>
+                        <View>
+                            <Text >Dispositivos utilizados:  </Text>
+                            <View>
+                                {
+                                    Object.keys(DispMac).map((oneKey, x) => {
+                                        return (
+                                            <View key={x}>
+                                                <Text key={x}>{oneKey}:
+                                                    {
+                                                        Object.keys(DispMac[oneKey]).map((iden, i) => {
+                                                            if (DispMac[oneKey][iden]) {
+                                                                return (
+                                                                    <Text key={DispMac[oneKey][iden]}>
+                                                                        {DispMac[oneKey][i]}
+                                                                    </Text>
+                                                                )
+                                                            }
+                                                        })
+                                                    }
+                                                </Text>
+
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </View>
+
+                        </View>
+                        <View>
+                            <Text >Fecha del experimento:  </Text>
+                            <View>
+                                {
+                                    Object.keys(FechasData).map((oneKey, x) => {
+                                        return (
+                                            <View key={x}>
+                                                <Text key={x}>Fecha {oneKey}:
+                                                    {
+                                                        Object.keys(FechasData[oneKey]).map((iden, i) => {
+                                                            if (FechasData[oneKey][iden]) {
+                                                                return (
+                                                                    <Text key={FechasData[oneKey][iden]}>
+                                                                        {FormatearFecha(FechasData[oneKey][i])}
+                                                                    </Text>
+                                                                )
+                                                            }
+                                                        })
+                                                    }
+                                                </Text>
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </View>
+
+                        </View>
+                        <Button title="Calcular gasto energetico" />
+                        <Button title="Eliminar Experimento" />
                     </View>
                 )}
                 {Cargavisible && (<Carga />)}
