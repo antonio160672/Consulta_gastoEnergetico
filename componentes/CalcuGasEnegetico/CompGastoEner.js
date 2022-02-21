@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Button, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
+import { Text, View, Button, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native'
 import globalStyles from '../../App/Styles/GlobalStyles';
 import Modal from '../Modal/Modal';
 import { ExperimentosInformacion } from '../../App/Consultas/ConsultasServidor';
-import Carga from '../PantallaCarga/Carga'
-import { FormatearFecha } from '../../App/helpers';
+
 
 const diccionario = {
     carrera: require('../../App/Imagines/actividad_correr.png'),
@@ -65,73 +64,16 @@ const experimento = ({ Experimento }) => {
                 </TouchableOpacity>
             </View>
 
-            <Modal isVisible={Visible} setVisible={setVisible}>
-                {!Cargavisible && (
-                    <View>
-                        <View>
-                            <Text >Nombre del experimento:  </Text>
-                            <Text >         {Experimento} </Text>
-                        </View>
-                        <View>
-                            <Text >Dispositivos utilizados:  </Text>
-                            <View>
-                                {
-                                    Object.keys(DispMac).map((oneKey, x) => {
-                                        return (
-                                            <View key={x}>
-                                                <Text key={x}>{oneKey}:
-                                                    {
-                                                        Object.keys(DispMac[oneKey]).map((iden, i) => {
-                                                            if (DispMac[oneKey][iden]) {
-                                                                return (
-                                                                    <Text key={DispMac[oneKey][iden]}>
-                                                                        {DispMac[oneKey][i]}
-                                                                    </Text>
-                                                                )
-                                                            }
-                                                        })
-                                                    }
-                                                </Text>
-
-                                            </View>
-                                        )
-                                    })
-                                }
-                            </View>
-
-                        </View>
-                        <View>
-                            <Text >Fecha del experimento:  </Text>
-                            <View>
-                                {
-                                    Object.keys(FechasData).map((oneKey, x) => {
-                                        return (
-                                            <View key={x}>
-                                                <Text key={x}>Fecha {oneKey}:
-                                                    {
-                                                        Object.keys(FechasData[oneKey]).map((iden, i) => {
-                                                            if (FechasData[oneKey][iden]) {
-                                                                return (
-                                                                    <Text key={FechasData[oneKey][iden]}>
-                                                                        {FormatearFecha(FechasData[oneKey][i])}
-                                                                    </Text>
-                                                                )
-                                                            }
-                                                        })
-                                                    }
-                                                </Text>
-                                            </View>
-                                        )
-                                    })
-                                }
-                            </View>
-
-                        </View>
-                        <Button title="Calcular gasto energetico" />
-                        <Button title="Eliminar Experimento" />
-                    </View>
-                )}
-                {Cargavisible && (<Carga />)}
+            <Modal
+                isVisible={Visible}
+                setVisible={setVisible}
+                DispositivoData={DispMac}
+                FechasData={FechasData}
+                Experimento={Experimento}
+                Cargavisible={Cargavisible}
+            >
+                
+                
             </Modal>
 
         </View>
@@ -167,11 +109,7 @@ const styles = StyleSheet.create({
         alignContent: 'center'
     },
     Actividad: {
-        fontSize: 15,
-        color: '#64748B',
-        marginBottom: 5,
-        textAlign: 'justify'
-    },
-
+        ...globalStyles.Actividad,
+    }
 })
 export default experimento;
