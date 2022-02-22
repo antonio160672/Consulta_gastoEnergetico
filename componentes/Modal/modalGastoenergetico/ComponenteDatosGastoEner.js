@@ -3,11 +3,11 @@ import globalStyles from '../../../App/Styles/GlobalStyles'
 import React from 'react'
 import { FormatearFecha } from '../../../App/helpers'
 
-const ComponenteDatosGastoEner = ({ DispositivoData, FechasData, Experimento, Clickbuton}) => {
+const ComponenteDatosGastoEner = ({ DispositivoData, FechasData, Experimento, Clickbuton }) => {
     return (
         <View >
             {
-                console.log("Datamoda",DispositivoData)
+                console.log("Datamoda", DispositivoData)
             }
             <View style={styles.ContenedorExperiemnto}>
                 <Text style={styles.Titulos} >Nombre del experimento:</Text>
@@ -33,7 +33,6 @@ const ComponenteDatosGastoEner = ({ DispositivoData, FechasData, Experimento, Cl
                                             })
                                         }
                                     </Text>
-
                                 </View>
                             )
                         })
@@ -131,7 +130,5 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
     },
-
-
 })
 export default ComponenteDatosGastoEner

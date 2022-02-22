@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { Overlay } from 'react-native-elements'
 import ComponenteDatosGastoEner from './modalGastoenergetico/ComponenteDatosGastoEner'
@@ -10,8 +10,8 @@ export default Modal = ({ isVisible, setVisible,
     DispositivoData, FechasData, Experimento, Cargavisible }) => {
     const [banderaFormulario, setbanderaFormulario] = useState(true)
     const handleClick = () => {
-        console.log('Button clicked!');
-        setbanderaFormulario(false)
+        console.log('Button clicked!', banderaFormulario);
+        banderaFormulario ? setbanderaFormulario(false) : setbanderaFormulario(true)
     }
     return (
         <Overlay
@@ -20,9 +20,12 @@ export default Modal = ({ isVisible, setVisible,
             onBackdropPress={() => setVisible(false)}
         >
             <View>
-                <View style={styles.container}>
-                    <Text style={styles.Actividad} >Datos del experimento</Text>
-                </View>
+                {banderaFormulario && (
+                    <View style={styles.container}>
+                        <Text style={styles.Actividad} >Datos del experimento</Text>
+                    </View>
+                )}
+
                 {!Cargavisible && (
                     banderaFormulario ? (
                         <ComponenteDatosGastoEner
@@ -31,7 +34,11 @@ export default Modal = ({ isVisible, setVisible,
                             Experimento={Experimento}
                             Clickbuton={handleClick}
                         />
-                    ) : (<FormularioGastoenergetico />)
+                    ) : (
+                        <FormularioGastoenergetico
+                            setbanderaFormulario={setbanderaFormulario}
+                        />
+                    )
                 )}
                 {Cargavisible && (<Carga />)}
             </View>
