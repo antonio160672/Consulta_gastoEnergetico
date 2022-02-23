@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, SafeAreaView, Button } from 'react-native'
-import globalStyles from '../../../App/Styles/GlobalStyles'
+import globalStyles from '../../App/Styles/GlobalStyles'
 import React from 'react'
-import { FormatearFecha } from '../../../App/helpers'
+import { FormatearFecha } from '../../App/helpers'
 
 const ComponenteDatosGastoEner = ({ DispositivoData, FechasData, Experimento, Clickbuton }) => {
     return (

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { Overlay } from 'react-native-elements'
-import ComponenteDatosGastoEner from './modalGastoenergetico/ComponenteDatosGastoEner'
+import ComponenteDatosGastoEner from './ComponenteDatosGastoEner'
 import Carga from '../PantallaCarga/Carga'
 import globalStyles from '../../App/Styles/GlobalStyles'
-import FormularioGastoenergetico from './modalGastoenergetico/FormularioGastoenergetico'
+import FormularioGastoenergetico from '../FormularioGastoenergetico/FormularioGastoenergetico'
 
 export default Modal = ({ isVisible, setVisible,
     DispositivoData, FechasData, Experimento, Cargavisible }) => {
@@ -37,6 +37,7 @@ export default Modal = ({ isVisible, setVisible,
                     ) : (
                         <FormularioGastoenergetico
                             setbanderaFormulario={setbanderaFormulario}
+                            Experimento={Experimento}
                         />
                     )
                 )}

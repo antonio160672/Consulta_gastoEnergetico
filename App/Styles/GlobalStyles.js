@@ -1,3 +1,6 @@
+import {
+    DefaultTheme
+  } from 'react-native-paper';
 const globalStyles = {
     contenedor: {
         backgroundColor: '#FFF',
@@ -37,6 +40,16 @@ const globalStyles = {
         marginBottom: 4,
         textAlign: 'justify'
     },
+    theme: {
+        ...DefaultTheme,
+        colors: {
+          ...DefaultTheme.colors,
+          background: '#fff',
+          text: 'black',
+          primary: '#1774f2',
+          underlineColor: 'transparent',
+        }
+      }
 }
 
 export default globalStyles
