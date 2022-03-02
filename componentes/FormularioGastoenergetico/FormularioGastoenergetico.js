@@ -7,8 +7,10 @@ import {
   ScrollView
 } from 'react-native'
 import CamposFormulario from './CamposFormulario'
+import { GetVectorDeMagnitud } from '../../App/Consultas/ConsultasServidor'
 const FormularioGastoenergetico = ({ setbanderaFormulario, Experimento }) => {
   const [OcultarFormulario, setOcultarFormulario] = useState(true)
+  const [vectorMagnitud, setvectorMagnitud] = useState()
   const [DatosUsuario, setDatosUsuario] = useState({
     cortedown: '',
     corteup: '',
@@ -16,11 +18,27 @@ const FormularioGastoenergetico = ({ setbanderaFormulario, Experimento }) => {
     Altura: '',
     sexo: '',
     epocas: 10,
-    Experimento: Experimento
+    entidad: Experimento
   });
   const theme = {
     ...globalStyles.theme
   }
+
+  useEffect(() => {
+    const fetchExperimento = async () => {
+      try {
+        if (DatosUsuario.cortedown) {
+          const vector = await GetVectorDeMagnitud(JSON.stringify(DatosUsuario))
+          setvectorMagnitud(vector)
+        }
+
+      } catch (error) {
+        console.log("sin datos recuperados")
+      }
+    }
+    fetchExperimento()
+  }, [DatosUsuario.cortedown])
+
   const Asignardatos = (usuario, sexo) => {
     console.log("principal", (usuario))
     setDatosUsuario(prevConnections => ({
@@ -32,8 +50,8 @@ const FormularioGastoenergetico = ({ setbanderaFormulario, Experimento }) => {
       sexo: sexo
     }))
     OcultarFormulario ? setOcultarFormulario(false) : setOcultarFormulario(true)
-
   }
+
 
   // Mensajes de Validación del Formulario 
   return (
@@ -45,7 +63,7 @@ const FormularioGastoenergetico = ({ setbanderaFormulario, Experimento }) => {
         ></CamposFormulario>
       }
       {!OcultarFormulario &&
-        <View>{console.log(DatosUsuario)}</View>
+        <View>{(console.log("data in real", vectorMagnitud))}</View>
       }
 
     </View>

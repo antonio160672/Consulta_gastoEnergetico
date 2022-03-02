@@ -21,3 +21,15 @@ export const ExperimentosInformacion = async (Entidad) => {
     const resultado = await respuesta.json()
     return resultado;
 };
+export const GetVectorDeMagnitud = async (DatosUsuario) => {
+    console.log("se entro a la consulta")
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: DatosUsuario
+    };
+    var getExperiemntos = URL + 'obteinvectorecuento'
+    const respuesta = await fetch(getExperiemntos,requestOptions)
+    const resultado = await respuesta.json()
+    return resultado;
+};
