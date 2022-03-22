@@ -1,8 +1,17 @@
-import { View, Text, StyleSheet } from 'react-native'
-import {Picker} from '@react-native-picker/picker';
+import { View, StyleSheet, Button } from 'react-native'
+import globalStyles from '../../App/Styles/GlobalStyles';
+import {
+    Button as ButtonPaper
+} from 'react-native-paper';
+import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react'
+import Csv from './Csv';
 
-const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
+const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
+    const theme = {
+        ...globalStyles.theme
+    }
+
     const [ActiGraphF, setActiGraphF] = useState({
         mano: 0,
         pierna: 0,
@@ -74,7 +83,6 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
     }
 
     const CalcularFormulas = () => {
-        console.log("principal", (DatosUsuario))
         ActiGrap(vectorMagnitud)
         ActiGrapKingsley(vectorMagnitud)
         hildebrand(vectorMagnitud)
@@ -84,6 +92,12 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
         howeFormH2(vectorMagnitud)
         howeFormM1(vectorMagnitud)
         howeFormM2(vectorMagnitud)
+
+        try {
+            Csv(Object.values(vectorMagnitud), Experimento)
+        } catch (error) {
+
+        }
     }
 
     const ActiGrap = (vectorMagnitud) => {
@@ -93,7 +107,6 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
                 (dato * 0.0000191 * (DatosUsuario.IMC))))
             + total, 0
         )
-        debugger
         const piernaGast = vectorMagnitud.piernaFvm.reduce((total, dato) =>
             ((dato > 2453 ?
                 (0.001064 * dato + 0.087512 * (DatosUsuario.IMC) - 5.500229) :
@@ -122,7 +135,7 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, dato) =>
             ((dato > 2453 ?
                 (0.000863 * dato + 0.668876) :
-                (0.0000191 * dato + 1.336129)))
+                (0.001092 * dato + 1.336129)))
             + total, 0
         )
         const piernaGast = vectorMagnitud.piernaFvm.reduce((total, dato) =>
@@ -142,10 +155,10 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
 
         setActiKingsley(prevdatos => ({
             ...prevdatos,
-            mano: manoGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            pierna: piernaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            cintura: cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            promedio: promedio * 0.0175 * DatosUsuario.Pesoindividuo,
+            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
         }))
     }
 
@@ -167,10 +180,10 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
 
         sethildebrandForm(prevdatos => ({
             ...prevdatos,
-            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
-            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
-            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
-            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) / 100,
+            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 100,
+            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 100,
+            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) / 100,
         }))
     }
     const caronFormC = (vectorMagnitud) => {
@@ -239,34 +252,10 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
 
         sethoweFormHom1(prevdatos => ({
             ...prevdatos,
-            mano: manoGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            pierna: piernaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            cintura: cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            promedio: promedio * 0.0175 * DatosUsuario.Pesoindividuo,
-        }))
-    }
-    const howeFormM1 = (vectorMagnitud) => {
-        const manoGast = vectorMagnitud.manoFvm.reduce((total, VM) =>
-            ((.00045 * VM) + 1.336)
-            + total, 0
-        )
-        const piernaGast = vectorMagnitud.piernaFvm.reduce((total, VM) =>
-            ((.00045 * VM) + 1.336)
-            + total, 0
-        )
-
-        const cinturaGast = vectorMagnitud.cinturaFvm.reduce((total, VM) =>
-            ((.00045 * VM) + 1.336)
-            + total, 0
-        )
-        const promedio = promedioFormulas(manoGast, piernaGast, cinturaGast)
-
-        sethoweFormMuj1(prevdatos => ({
-            ...prevdatos,
-            mano: manoGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            pierna: piernaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            cintura: cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            promedio: promedio * 0.0175 * DatosUsuario.Pesoindividuo,
+            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
         }))
     }
 
@@ -288,12 +277,39 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
 
         sethoweFormHom2(prevdatos => ({
             ...prevdatos,
-            mano: manoGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            pierna: piernaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            cintura: cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            promedio: promedio * 0.0175 * DatosUsuario.Pesoindividuo,
+            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) ,
+            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) ,
+            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) ,
+            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) ,
         }))
     }
+
+    const howeFormM1 = (vectorMagnitud) => {
+        const manoGast = vectorMagnitud.manoFvm.reduce((total, VM) =>
+            ((.00045 * VM) + 1.336)
+            + total, 0
+        )
+        const piernaGast = vectorMagnitud.piernaFvm.reduce((total, VM) =>
+            ((.00045 * VM) + 1.336)
+            + total, 0
+        )
+
+        const cinturaGast = vectorMagnitud.cinturaFvm.reduce((total, VM) =>
+            ((.00045 * VM) + 1.336)
+            + total, 0
+        )
+        const promedio = promedioFormulas(manoGast, piernaGast, cinturaGast)
+
+        sethoweFormMuj1(prevdatos => ({
+            ...prevdatos,
+            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+        }))
+    }
+
+
     const howeFormM2 = (vectorMagnitud) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, VM) =>
             ((.001 * VM) + (.048 * DatosUsuario.IMC) - 1.6442)
@@ -312,21 +328,26 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
 
         sethoweFormMuj2(prevdatos => ({
             ...prevdatos,
-            mano: manoGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            pierna: piernaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            cintura: cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo,
-            promedio: promedio * 0.0175 * DatosUsuario.Pesoindividuo,
+            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
+            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) / 10,
         }))
+    }
+    const Imprimir = () => {
+        console.table("ActiGraphF: ", ActiGraphF)
+        console.log("ActiKingsley: ", ActiKingsley)
+        console.log("hildebrandForm: ", hildebrandForm)
+        console.log("caronFormcadera: ", caronFormcadera)
+        console.log("caronFormtobillo: ", caronFormtobillo)
+        console.log("howeFormHom1: ", howeFormHom1)
+        console.log("howeFormHom2: ", howeFormHom2)
+        console.log("howeFormMuj1: ", howeFormMuj1)
+        console.log("howeFormMuj2: ", howeFormMuj2)
     }
 
     return (
         <View>
-            <Text>Formulas {console.log(ActiGraphF, ActiKingsley,
-                hildebrandForm,
-                caronFormcadera, caronFormtobillo,
-                howeFormHom1, howeFormHom2,
-                howeFormMuj1, howeFormMuj2)}</Text>
-
             <View style={styles.container}>
                 <Picker
                     selectedValue={selectedValue}
@@ -336,7 +357,17 @@ const Formulas = ({ vectorMagnitud, DatosUsuario }) => {
                     <Picker.Item label="Java" value="java" />
                     <Picker.Item label="JavaScript" value="js" />
                 </Picker>
+                <ButtonPaper
+                    mode="contained"
+                    color={"#2196F3"}
+                    contentStyle={{ height: 40, width:100 }}
+                    theme={theme}
+                    labelStyle={{ color: "#FFFFFF", fontSize: 14, width: 100 }}
+                    title="Imprimir"
+                    onPress={Imprimir}
+                >Imprimir</ButtonPaper>
             </View>
+
 
         </View>
     )

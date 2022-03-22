@@ -72,6 +72,7 @@ const FormularioGastoenergetico = ({ setbanderaFormulario, Experimento }) => {
           <Formulas
             vectorMagnitud={vectorMagnitud}
             DatosUsuario={DatosUsuario}
+            Experimento={Experimento}
           />
         )
       )
