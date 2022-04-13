@@ -1,4 +1,4 @@
-import { View, StyleSheet, Button } from 'react-native'
+import { View, StyleSheet, Button, SafeAreaView, Text } from 'react-native'
 import globalStyles from '../../App/Styles/GlobalStyles';
 import {
     Button as ButtonPaper
@@ -6,6 +6,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react'
 import Csv from './Csv';
+import DatosGastoEne from './DatosGastoEne';
 
 const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
     const theme = {
@@ -67,11 +68,43 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
         cintura: 0,
         promedio: 0,
     })
-    const [selectedValue, setSelectedValue] = useState("java");
+    const [selectedValue, setSelectedValue] = useState("ActiGraph");
+    const [FormulaEE, setFormulaEE] = useState({});
 
     useEffect(() => {
         CalcularFormulas()
     }, [])
+
+    // useEffect(() => {
+    //     switch (selectedValue) {
+    //         case 'ActiGraph':
+    //             setFormulaEE(ActiGraphF)
+    //             break;
+    //         case 'Freedson':
+    //             setFormulaEE(ActiKingsley)
+    //             break;
+    //         case 'Hildebrand':
+    //             setFormulaEE(hildebrandForm)
+    //             break;
+    //         case 'CaronCad':
+    //             setFormulaEE(caronFormcadera)
+    //             break;
+    //         case 'CaronTob':
+    //             setFormulaEE(caronFormtobillo)
+    //             break;
+    //         case 'HoweHsIMC':
+    //             setFormulaEE(howeFormHom1)
+    //             break;
+    //         case 'HoweMsIMC':
+    //             setFormulaEE(howeFormMuj1)
+    //             break;
+    //         case 'HoweMsIMC':
+    //             setFormulaEE(howeFormMuj2)
+    //             break;
+    //         default:
+    //             console.log('Lo lamentamos, por el momento no disponemos de ' + selectedValue + '.');
+    //     }
+    // }, [selectedValue])
 
     const promedioFormulas = (manoGast, piernaGast, cinturaGast) => {
         return (manoGast > 0 && piernaGast > 0 && cinturaGast > 0) ?
@@ -92,33 +125,40 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
         howeFormH2(vectorMagnitud)
         howeFormM1(vectorMagnitud)
         howeFormM2(vectorMagnitud)
-
+    }
+    const Almacenar = () => {
         try {
             Csv(Object.values(vectorMagnitud), Experimento)
         } catch (error) {
 
         }
+        console.log("almacenado")
+
     }
 
     const ActiGrap = (vectorMagnitud) => {
+
         const manoGast = vectorMagnitud.manoFvm.reduce((total, dato) =>
+            total +
             ((dato > 2453 ?
                 (0.001064 * dato + 0.087512 * (DatosUsuario.IMC) - 5.500229) :
-                (dato * 0.0000191 * (DatosUsuario.IMC))))
-            + total, 0
+                (dato * 0.0000191 * DatosUsuario.IMC)))
+            , 0
         )
         const piernaGast = vectorMagnitud.piernaFvm.reduce((total, dato) =>
+            total +
             ((dato > 2453 ?
                 (0.001064 * dato + 0.087512 * (DatosUsuario.IMC) - 5.500229) :
-                (dato * 0.0000191 * (DatosUsuario.IMC))))
-            + total, 0
+                (dato * 0.0000191 * DatosUsuario.IMC)))
+            , 0
         )
 
         const cinturaGast = vectorMagnitud.cinturaFvm.reduce((total, dato) =>
+            total +
             ((dato > 2453 ?
                 (0.001064 * dato + 0.087512 * (DatosUsuario.IMC) - 5.500229) :
-                (dato * 0.0000191 * (DatosUsuario.IMC))))
-            + total, 0
+                (dato * 0.0000191 * DatosUsuario.IMC)))
+            , 0
         )
         const promedio = promedioFormulas(manoGast, piernaGast, cinturaGast)
 
@@ -133,23 +173,23 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
 
     const ActiGrapKingsley = (vectorMagnitud) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, dato) =>
-            ((dato > 2453 ?
+            total + ((dato > 2453 ?
                 (0.000863 * dato + 0.668876) :
                 (0.001092 * dato + 1.336129)))
-            + total, 0
+            , 0
         )
         const piernaGast = vectorMagnitud.piernaFvm.reduce((total, dato) =>
-            ((dato > 2453 ?
+            total + ((dato > 2453 ?
                 (0.000863 * dato + 0.668876) :
-                (0.0000191 * dato + 1.336129)))
-            + total, 0
+                (0.001092 * dato + 1.336129)))
+            , 0
         )
 
         const cinturaGast = vectorMagnitud.cinturaFvm.reduce((total, dato) =>
-            ((dato > 2453 ?
+            total + ((dato > 2453 ?
                 (0.000863 * dato + 0.668876) :
-                (0.0000191 * dato + 1.336129)))
-            + total, 0
+                (0.001092 * dato + 1.336129)))
+            , 0
         )
         const promedio = promedioFormulas(manoGast, piernaGast, cinturaGast)
 
@@ -164,17 +204,17 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
 
     const hildebrand = (vectorMagnitud) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, dato) =>
-            ((0.0320 * dato + 7.28) / 3.5)
-            + total, 0
+            total + ((0.0320 * dato + 7.28) / 3.5)
+            , 0
         )
         const piernaGast = vectorMagnitud.piernaFvm.reduce((total, dato) =>
-            ((0.0320 * dato + 7.28) / 3.5)
-            + total, 0
+            total + ((0.0320 * dato + 7.28) / 3.5)
+            , 0
         )
 
         const cinturaGast = vectorMagnitud.cinturaFvm.reduce((total, dato) =>
-            ((0.0320 * dato + 7.28) / 3.5)
-            + total, 0
+            total + ((0.0320 * dato + 7.28) / 3.5)
+            , 0
         )
         const promedio = promedioFormulas(manoGast, piernaGast, cinturaGast)
 
@@ -186,54 +226,57 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
             promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) / 100,
         }))
     }
+
     const caronFormC = (vectorMagnitud) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, VM) =>
-            (-0.763 + 0.491 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.47 * ((DatosUsuario.sexo) ? 1 : 0))
-            + total, 0
+            total + (-0.763 + 0.491 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.47 * ((DatosUsuario.sexo) ? 1 : 0))
+            , 0
         )
         const piernaGast = vectorMagnitud.piernaFvm.reduce((total, VM) =>
-            (-0.763 + 0.491 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.47 * ((DatosUsuario.sexo) ? 1 : 0))
-            + total, 0
+            total + (-0.763 + 0.491 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.47 * ((DatosUsuario.sexo) ? 1 : 0))
+            , 0
         )
 
         const cinturaGast = vectorMagnitud.cinturaFvm.reduce((total, VM) =>
-            (-0.763 + 0.491 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.47 * ((DatosUsuario.sexo) ? 1 : 0))
-            + total, 0
+            total + (-0.763 + 0.491 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.47 * ((DatosUsuario.sexo) ? 1 : 0))
+            , 0
         )
         const promedio = promedioFormulas(manoGast, piernaGast, cinturaGast)
 
         setcaronFormcadera(prevdatos => ({
             ...prevdatos,
-            mano: manoGast / 1000,
-            pierna: piernaGast / 1000,
-            cintura: cinturaGast / 1000,
-            promedio: promedio / 1000,
+            mano: (manoGast * 0.0175 * DatosUsuario.IMC) / 1000,
+            pierna: (piernaGast * 0.0175 * DatosUsuario.IMC) / 1000,
+            cintura: (cinturaGast * 0.0175 * DatosUsuario.IMC) / 1000,
+            promedio: (promedio * 0.0175 * DatosUsuario.IMC) / 1000,
         }))
     }
+
     const caronFormT = (vectorMagnitud) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, VM) =>
-            (-0.683 + 0.216 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.42 * ((DatosUsuario.sexo) ? 1 : 0))
-            + total, 0
+            total + (-0.683 + 0.216 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.42 * ((DatosUsuario.sexo) ? 1 : 0))
+            , 0
         )
         const piernaGast = vectorMagnitud.piernaFvm.reduce((total, VM) =>
-            (-0.683 + 0.216 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.42 * ((DatosUsuario.sexo) ? 1 : 0))
-            + total, 0
+            total + (-0.683 + 0.216 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.42 * ((DatosUsuario.sexo) ? 1 : 0))
+            , 0
         )
 
         const cinturaGast = vectorMagnitud.cinturaFvm.reduce((total, VM) =>
-            (-0.683 + 0.216 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.42 * ((DatosUsuario.sexo) ? 1 : 0))
-            + total, 0
+            total + (-0.683 + 0.216 * VM + 0.063 * DatosUsuario.IMC + 0 + 0.42 * ((DatosUsuario.sexo) ? 1 : 0))
+            , 0
         )
         const promedio = promedioFormulas(manoGast, piernaGast, cinturaGast)
 
         setcaronFormtobillo(prevdatos => ({
             ...prevdatos,
-            mano: manoGast / 1000,
-            pierna: piernaGast / 1000,
-            cintura: cinturaGast / 1000,
-            promedio: promedio / 1000,
+            mano: (manoGast) / 1000,
+            pierna: (piernaGast) / 1000,
+            cintura: (cinturaGast) / 1000,
+            promedio: (promedio) / 1000,
         }))
     }
+
     const howeFormH1 = (vectorMagnitud) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, VM) =>
             (.00045 * VM + 4.028)
@@ -261,7 +304,7 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
 
     const howeFormH2 = (vectorMagnitud) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, VM) =>
-            ((.001 * VM) + (.062 * DatosUsuario.IMC) - 2.711)
+            (.001 * VM + .062 * DatosUsuario.IMC - 2.711)
             + total, 0
         )
         const piernaGast = vectorMagnitud.piernaFvm.reduce((total, VM) =>
@@ -277,10 +320,10 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
 
         sethoweFormHom2(prevdatos => ({
             ...prevdatos,
-            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) ,
-            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) ,
-            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) ,
-            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) ,
+            mano: (manoGast * 0.0175 * DatosUsuario.Pesoindividuo) / 5,
+            pierna: (piernaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 5,
+            cintura: (cinturaGast * 0.0175 * DatosUsuario.Pesoindividuo) / 5,
+            promedio: (promedio * 0.0175 * DatosUsuario.Pesoindividuo) / 5,
         }))
     }
 
@@ -309,7 +352,6 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
         }))
     }
 
-
     const howeFormM2 = (vectorMagnitud) => {
         const manoGast = vectorMagnitud.manoFvm.reduce((total, VM) =>
             ((.001 * VM) + (.048 * DatosUsuario.IMC) - 1.6442)
@@ -335,37 +377,93 @@ const Formulas = ({ vectorMagnitud, DatosUsuario, Experimento }) => {
         }))
     }
     const Imprimir = () => {
-        console.table("ActiGraphF: ", ActiGraphF)
-        console.log("ActiKingsley: ", ActiKingsley)
-        console.log("hildebrandForm: ", hildebrandForm)
-        console.log("caronFormcadera: ", caronFormcadera)
-        console.log("caronFormtobillo: ", caronFormtobillo)
-        console.log("howeFormHom1: ", howeFormHom1)
-        console.log("howeFormHom2: ", howeFormHom2)
-        console.log("howeFormMuj1: ", howeFormMuj1)
-        console.log("howeFormMuj2: ", howeFormMuj2)
+        // console.table("ActiGraphF: ", ActiGraphF)
+        // console.log("ActiKingsley: ", ActiKingsley)
+        // console.log("hildebrandForm: ", hildebrandForm)
+        // console.log("caronFormcadera: ", caronFormcadera)
+        // console.log("caronFormtobillo: ", caronFormtobillo)
+        // console.log("howeFormHom1: ", howeFormHom1)
+        // console.log("howeFormHom2: ", howeFormHom2)
+        // console.log("howeFormMuj1: ", howeFormMuj1)
+        // console.log("howeFormMuj2: ", howeFormMuj2)
+        switch (selectedValue) {
+            case 'ActiGraph':
+                setFormulaEE(ActiGraphF)
+                break;
+            case 'Freedson':
+                setFormulaEE(ActiKingsley)
+                break;
+            case 'Hildebrand':
+                setFormulaEE(hildebrandForm)
+                break;
+            case 'CaronCad':
+                setFormulaEE(caronFormcadera)
+                break;
+            case 'CaronTob':
+                setFormulaEE(caronFormtobillo)
+                break;
+            case 'HoweHsIMC':
+                setFormulaEE(howeFormHom1)
+                break;
+            case 'HoweMsIMC':
+                setFormulaEE(howeFormMuj1)
+                break;
+            case 'HoweMsIMC':
+                setFormulaEE(howeFormMuj2)
+                break;
+            default:
+                console.log('Lo lamentamos, por el momento no disponemos de ' + selectedValue + '.');
+        }
     }
 
     return (
         <View>
             <View style={styles.container}>
+                <Text style={styles.Actividad} >Seleccione la fórmula a usar</Text>
                 <Picker
                     selectedValue={selectedValue}
-                    style={{ height: 50, width: 150 }}
+                    style={{ height: 50, width: 300 }}
                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
                 >
-                    <Picker.Item label="Java" value="java" />
-                    <Picker.Item label="JavaScript" value="js" />
+                    <Picker.Item label="Fórmula de ActiGraph" value="ActiGraph" />
+                    <Picker.Item label="Fórmula de combinación Freedson" value="Freedson" />
+                    <Picker.Item label="Fórmula de Hildebrand" value="Hildebrand" />
+                    <Picker.Item label="Fórmula de Caron para cadera" value="CaronCad" />
+                    <Picker.Item label="Fórmula de Caron para tobillo" value="CaronTob" />
+                    <Picker.Item label="Fórmula de Howe hombre sin IMC" value="HoweHsIMC" />
+                    <Picker.Item label="Fórmula de Howe hombre con IMC" value="HoweHCIMC" />
+                    <Picker.Item label="Fórmula de Howe mujer sin IMC" value="HoweMsIMC" />
+                    <Picker.Item label="Fórmula de Howe mujer con IMC" value="HoweMCIMC" />
+
                 </Picker>
-                <ButtonPaper
-                    mode="contained"
-                    color={"#2196F3"}
-                    contentStyle={{ height: 40, width:100 }}
-                    theme={theme}
-                    labelStyle={{ color: "#FFFFFF", fontSize: 14, width: 100 }}
-                    title="Imprimir"
-                    onPress={Imprimir}
-                >Imprimir</ButtonPaper>
+                <DatosGastoEne
+                    FormulaEE={FormulaEE}
+
+                />
+                {/* agregar un nuevo componente que dependa de selectedValue */}
+                <SafeAreaView style={styles.containerButton}>
+                    <View style={styles.Contenedorbutton}>
+                        <Button
+                            color={"#2196F3"}
+                            marginVertial={10}
+                            borderRadius={20}
+                            textStyle={{ color: "#FFFFFF", fontSize: 20 }}
+                            title="Imprimir"
+                            onPress={Imprimir}
+                        />
+                    </View>
+                    <View style={styles.Contenedorbutton}>
+
+                        <Button
+                            color={"#2196F3"}
+                            marginVertial={10}
+                            borderRadius={20}
+                            textStyle={{ color: "#FFFFFF", fontSize: 20 }}
+                            title="Guardara VM"
+                            onPress={Almacenar}
+                        />
+                    </View>
+                </SafeAreaView>
             </View>
 
 
@@ -376,6 +474,23 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 10,
         alignItems: "center"
-    }
+    },
+    Actividad: {
+        ...globalStyles.Actividad,
+        fontSize: 18,
+        fontWeight: 'bold',
+        justifyContent: "space-around"
+    },
+    containerButton: {
+        marginTop: 20,
+        flexDirection: "row",
+        justifyContent: "space-around",
+    },
+    Contenedorbutton: {
+        width: '45%',
+        height: 50,
+        borderRadius: 5,
+        marginRight: 10
+    },
 });
 export default Formulas

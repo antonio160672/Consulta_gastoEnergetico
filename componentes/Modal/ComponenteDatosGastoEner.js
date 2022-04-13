@@ -88,12 +88,6 @@ const ComponenteDatosGastoEner = ({ DispositivoData, FechasData, Experimento, Cl
                 </View>
             </SafeAreaView>
 
-            <Button
-                color={"#5DADE2"}
-                marginVertial={10}
-                textStyle={{ color: "#FFFFFF", fontSize: 20 }}
-                title="Guardar VM y Recuentos"
-            />
         </View>
     )
 }

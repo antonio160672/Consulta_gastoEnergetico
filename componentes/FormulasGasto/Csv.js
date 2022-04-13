@@ -25,7 +25,7 @@ const Csv = (vectorMagnitud, Experimento) => {
     const csvString = `${headerString}${rowString}`;
 
     // write the current list of answers to a local csv file
-    const pathToWrite = "/storage/emulated/0/Documents/"+Experimento+ ".csv";
+    const pathToWrite = "/storage/emulated/0/Documents/"+Experimento+ "VM.csv";
     // pathToWrite /storage/emulated/0/Download/data.csv
     RNFetchBlob.fs
         .writeFile(pathToWrite, csvString, 'utf8')
